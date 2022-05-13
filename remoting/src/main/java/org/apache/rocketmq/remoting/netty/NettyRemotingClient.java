@@ -211,7 +211,7 @@ public class NettyRemotingClient extends NettyRemotingAbstract implements Remoti
                     log.error("scanResponseTable exception", e);
                 }
             }
-        }, 1000 * 3, 1000);
+        }, 0, 1000);
 
         if (this.channelEventListener != null) {
             this.nettyEventExecutor.start();
