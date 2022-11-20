@@ -35,8 +35,13 @@ public class DefaultElectPolicy implements ElectPolicy {
     // <clusterName, brokerAddr, info> getter to get more information
     private BiFunction<String, String, BrokerLiveInfo> additionalInfoGetter;
 
-    private final Comparator<BrokerLiveInfo> comparator = (x, y) -> {
-        return x.getEpoch() == y.getEpoch() ? (int) (y.getMaxOffset() - x.getMaxOffset()) : y.getEpoch() - x.getEpoch();
+    private final Comparator<BrokerLiveInfo> comparator = (o1, o2) -> {
+        if (o1.getEpoch() == o2.getEpoch()) {
+            return o1.getMaxOffset() == o2.getMaxOffset() ? o2.getElectionPriority() - o1.getElectionPriority() :
+                    (int) (o2.getMaxOffset() - o1.getMaxOffset());
+        } else {
+            return o2.getEpoch() - o1.getEpoch();
+        }
     };
 
     public DefaultElectPolicy(BiPredicate<String, String> validPredicate, BiFunction<String, String, BrokerLiveInfo> additionalInfoGetter) {
